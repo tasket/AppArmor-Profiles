@@ -53,11 +53,11 @@
 	owner @{HOME}/.local/share/applications/** r,
 
 
-  # for networking
-  network inet stream,
-  network inet6 stream,
-  @{PROC}/@{pid}/net/if_inet6 r,
-  @{PROC}/@{pid}/net/ipv6_route r,
+	# for networking
+	network inet stream,
+	network inet6 stream,
+	@{PROC}/@{pid}/net/if_inet6 r,
+	@{PROC}/@{pid}/net/ipv6_route r,
 
   # should maybe be in abstractions
 #  /usr/share/xubuntu/applications/defaults.list r,
