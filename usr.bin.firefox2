@@ -1,0 +1,114 @@
+#include <tunables/global>
+
+/usr/{lib/,bin/}firefox{,-esr}/firefox{,-esr} {
+
+	#include <abstractions/audio>
+	#include <abstractions/nameservice>
+	#include <abstractions/gnome>
+	#include <abstractions/dbus-session>
+	#include <abstractions/ibus>
+
+	# Launcher
+	/usr/lib/firefox*/** ixr,
+	deny /usr/lib/firefox*/firefox*.sh x,
+	/usr/lib/xulrunner*/xulrunner-stub ix,
+	/usr/lib/xulrunner*/plugin-container ixr,
+
+	# Profile and cache
+	owner @{HOME}/.mozilla/firefox/** rwk,
+	owner @{HOME}/.cache/ rw,
+	owner @{HOME}/.cache/mozilla/ rw,
+	owner @{HOME}/.cache/mozilla/firefox/ rw,
+	owner @{HOME}/.cache/mozilla/firefox/** rwk,
+	owner @{HOME}/.cache/gstreamer-*/ rw,
+	owner @{HOME}/.cache/gstreamer-*/** rw,
+
+	# Downloads
+	owner @{HOME}/tmp/**                  rwl,
+	owner @{HOME}/[dD]ownload{,s}/        r,
+	owner @{HOME}/[dD]ownload{,s}/**      rwl,
+	owner @{HOME}/@{XDG_DESKTOP_DIR}/     r,
+	owner @{HOME}/@{XDG_DESKTOP_DIR}/*    rwl,
+	owner @{HOME}/@{XDG_DOWNLOAD_DIR}/    r,
+	owner @{HOME}/@{XDG_DOWNLOAD_DIR}/*   rwl,
+	owner "@{HOME}/My Downloads/"         r,
+	owner "@{HOME}/My Downloads/**"       rwl,
+
+	# Plugins
+	owner @{HOME}/.mozilla/plugins/ r,
+	owner @{HOME}/.mozilla/plugins/** mr,
+	owner @{HOME}/.mozilla/firefox/*/extensions/** m,
+	owner @{HOME}/.mozilla/extensions/** mr,
+	owner @{HOME}/{.macromedia,.adobe}/** rwk,
+	/usr/share/mozilla/** r,
+	/usr/share/firefox{,-esr}/** r,
+
+#	/etc/mailcap r,
+#	/usr/share/ r,
+#	/usr/share/mime/ r,
+#	/usr/share/glib-*/schemas/* r,
+#	/usr/share/applications/screensavers/ r,
+#	owner @{HOME}/.local/share/ r,
+#	owner @{HOME}/.local/share/applications/ r,
+	owner @{HOME}/.local/share/applications/** r,
+
+
+	# for networking
+	network inet stream,
+	network inet6 stream,
+	@{PROC}/@{pid}/net/if_inet6 r,
+	@{PROC}/@{pid}/net/ipv6_route r,
+
+  # should maybe be in abstractions
+#  /usr/share/xubuntu/applications/defaults.list r,
+  owner /tmp/** m,
+  owner /var/tmp/** m,
+  /tmp/.X[0-9]*-lock r,
+
+  /etc/timezone r,
+  /etc/writable/timezone r,
+  /etc/wildmidi/wildmidi.cfg r,
+
+  # firefox specific
+  /etc/firefox*/** r,
+  /etc/xul-ext/** r,
+  /etc/xulrunner{,-[0-9]*}/** r,
+  /etc/gre.d/* r,
+  /etc/mailcap r,
+  /etc/mime.types r,
+
+  # noisy
+#  deny /usr/lib/firefox*/** w,
+#  deny /usr/lib/{firefox,xulrunner}-addons/** w,
+#  deny /usr/lib/xulrunner-*/components/*.tmp w,
+#  deny /.suspended r,
+#  deny /boot/initrd.img* r,
+#  deny /boot/vmlinuz* r,
+#  deny /var/cache/fontconfig/ w,
+
+#  deny /usr/bin/gconftool-2 x,
+
+
+
+	deny /{,var/}run/user/*/dconf/user w,
+	deny @{HOME}/.config/dconf/user w,
+
+	owner @{PROC}/@{pid}/fd/ r,
+	owner @{PROC}/@{pid}/mountinfo r,
+	owner @{PROC}/@{pid}/statm r, # for about:memory
+	owner @{PROC}/@{pid}/task/[0-9]*/stat r,
+#	@{PROC}/@{pid}/net/arp r, # for local "network id", to detect changes
+
+	# Used in private mode
+	/usr/bin/shred ix,
+
+	## Site-local paths
+	# Images in file selection dialogs
+#	owner @{HOME}/.thumbnails/** w,
+	# Download handlers
+	deny /usr/bin/bash x, # flashgot leechers' detection
+	# downloads
+	/etc/fstab r,
+#	/etc/mtab r,
+
+}
